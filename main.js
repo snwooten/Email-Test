@@ -1,17 +1,15 @@
 /*
   TODOs:
-  1. Grab all emails using fetchEmailsFromDatabase
-
-  HINTs:
-  1. Read documentation for "fetchEmailsFromDatabase" carefully
-  2. Make use of "cursor" and "next" like paging results from APIs
+  1. Fetch all 7 emails using fetchEmailsFromDatabase
+  2. Render all emails using renderEmails
+  3. Throw out responses from fetchEmailsFromDatabase with (error === true), and handle retries
 */
 
-function render() {
-  // TODO 1: Your Code Here
+function main() {
+  // TODO: Your Code Here
 }
 
-render();
+main();
 
 //  ------------ Read But Do Not Make Changes Below This Line ------------
 
@@ -19,13 +17,14 @@ render();
   args:
     cursor: Integer, points to emails being fetched. Defaults to the beginning.
 
-    callback: Function with args ({result, next})
-      result: emails that were fetched from this call
-      next: cursor pointing to the next page of results,
+    callback: Function with args (error, { emails, next })
+      error: Boolean, random error that indicates response should be ignored
+      emails: Object[], results that were fetched from this call
+      next: Integer, cursor pointing to the next page of results,
             or null if there are no more results.
 */
 function fetchEmailsFromDatabase(cursor, callback) {
-  const emails = [
+  const allEmails = [
     {
       author: 'Bobby Bob',
       subject: 'Hey Friend!',
@@ -64,13 +63,15 @@ function fetchEmailsFromDatabase(cursor, callback) {
   ];
 
   setTimeout(() => {
-    const last = emails.length;
-    const unboundedNext = cursor + _.random(1, 3);
-    const boundedNext = Math.min(unboundedNext, last);
-    const result = emails.slice(cursor, boundedNext);
-    const next = cursor === last ? null : boundedNext;
+    const last = allEmails.length;
+    const next = Math.min(cursor + _.random(1, 3), last);
+    const error = _.random(1, 10) > 5;
+    const result = {
+      emails: allEmails.slice(cursor, next),
+      next: cursor === last ? null : next,
+    };
 
-    callback({ result, next });
+    callback(error, result);
   }, 100);
 }
 
