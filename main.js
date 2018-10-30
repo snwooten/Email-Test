@@ -1,8 +1,8 @@
 /*
   TODOs:
   1. Fetch all 7 emails using fetchEmailsFromDatabase
-  2. Render all emails using renderEmails
-  3. Throw out responses from fetchEmailsFromDatabase with (error === true), and handle retries
+  2. Throw out responses from fetchEmailsFromDatabase with (error === true), and handle retries
+  3. Render all emails using renderEmails
 */
 
 function main() {
