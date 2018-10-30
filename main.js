@@ -24,7 +24,7 @@ render();
       next: cursor pointing to the next page of results,
             or null if there are no more results.
 */
-function fetchEmailsFromDatabase(cursor = 0, callback) {
+function fetchEmailsFromDatabase(cursor, callback) {
   const emails = [
     {
       author: 'Bobby Bob',
@@ -65,18 +65,17 @@ function fetchEmailsFromDatabase(cursor = 0, callback) {
 
   setTimeout(() => {
     const last = emails.length;
-    const next = Math.min(cursor + _.random(1, 3), last);
-    const fetchedEmails = _.slice(emails, cursor, next);
+    const unboundedNext = cursor + _.random(1, 3);
+    const boundedNext = Math.min(unboundedNext, last);
+    const result = emails.slice(cursor, boundedNext);
+    const next = cursor === last ? null : boundedNext;
 
-    callback({
-      result: fetchedEmails,
-      next: cursor === last ? null : next,
-    });
+    callback({ result, next });
   }, 100);
 }
 
 function renderEmails(emails) {
-  const emailListHtml = _.map(emails, ({ author, subject, body }) => {
+  const emailListHtml = emails.map(({ author, subject, body }) => {
     return `<li class="email-item">
               <div class="meta-data">
                 <span> <b>${author}</b>: ${subject} </span>
