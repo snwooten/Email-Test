@@ -66,12 +66,15 @@ function fetchEmailsFromDatabase(cursor, callback) {
     const last = allEmails.length;
     const next = Math.min(cursor + _.random(1, 3), last);
     const error = _.random(1, 10) > 5;
-    const result = {
-      emails: allEmails.slice(cursor, next),
-      next: cursor === last ? null : next,
-    };
 
-    callback(error, result);
+    if (error) {
+      callback(error, { emails: [], next: null });
+    } else {
+      callback(null, {
+        emails: allEmails.slice(cursor, next),
+        next: cursor === last ? null : next,
+      });
+    }
   }, 100);
 }
 
