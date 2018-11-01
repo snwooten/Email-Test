@@ -15,7 +15,7 @@ main();
 
 /*
   args:
-    cursor: Integer, points to emails being fetched. Defaults to the beginning.
+    cursor: Integer, points to emails being fetched.
 
     callback: Function with args (error, { emails, next })
       error: Boolean, random error that indicates response should be ignored
