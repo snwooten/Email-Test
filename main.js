@@ -1,29 +1,29 @@
-/*
-  TODOs:
-  1. Fetch all 7 emails using fetchEmailsFromDatabase
-  2. Throw out responses from fetchEmailsFromDatabase with (error === true), and handle retries
-  3. Render all emails using renderEmails
-*/
-
+/**
+ * TODO:
+ *
+ * 1. Fetch all 7 emails using fetchEmailsFromDatabase
+ * 2. Throw out responses from fetchEmailsFromDatabase with (error === true), and handle retries
+ * 3. Render all emails using renderEmails
+ */
 function main() {
-  // TODO: Your Code Here
+  // Your Code Here
 }
 
 main();
 
 //  ------------ Read But Do Not Make Changes Below This Line ------------
 
-/*
-  args:
-    cursor: Integer, points to emails being fetched.
-
-    callback: Function with args (error, { emails, next })
-      error: Boolean, random error that indicates response should be ignored
-      emails: Object[], results that were fetched from this call
-      next: Integer, cursor pointing to the next page of results,
-            or null if there are no more results.
-*/
-function fetchEmailsFromDatabase(cursor, callback) {
+/**
+ * A simulated API call to fetch emails. The pagination
+ * length is randomly determined.
+ * 
+ * @param {number} offset - Offset for pagination 
+ * @param {function} callback - Has args (error, { emails, next })
+ *   error: {boolean}, random error that indicates response should be ignored
+ *   emails: {object[]}, results that were fetched from this call
+ *   next: {number}, offset pointing to the next page of results, or null if there are no more results.
+ */
+function fetchEmailsFromDatabase(offset, callback) {
   const allEmails = [
     {
       author: 'Bobby Bob',
@@ -62,20 +62,29 @@ function fetchEmailsFromDatabase(cursor, callback) {
     },
   ];
 
+  const maximum = allEmails.length;
+  const paginationLimit = _.random(1, 3);
+  const nextOffset = Math.min(offset + paginationLimit, maximum);
+
+  const produceRandomError = () => _.random(1, 10) > 5;
+
+  const arbitraryLatency = _.random(1, 10) * 100;
+
   setTimeout(() => {
-    const last = allEmails.length;
-    const next = Math.min(cursor + _.random(1, 3), last);
-    const error = _.random(1, 10) > 5;
+    const error = produceRandomError();
 
     if (error) {
-      callback(error, { emails: [], next: null });
+      callback(error, {
+        emails: [],
+        next: null
+      });
     } else {
       callback(null, {
-        emails: allEmails.slice(cursor, next),
-        next: cursor === last ? null : next,
+        emails: allEmails.slice(offset, nextOffset),
+        next: offset === maximum ? null : nextOffset,
       });
     }
-  }, 100);
+  }, arbitraryLatency);
 }
 
 function renderEmails(emails) {
